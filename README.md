@@ -8,24 +8,25 @@ In other words, it’s kind of like an observer with nice syntax. (And I’m int
 
 The usage is pretty straight-forward and echoes C#’s as much as possible.
 
+```c++
+void f(int n) { cout << "f: " << n << "\n"; }
 
-	void f(int n) { cout << "f: " << n << "\n"; }
+util::multifunction<void(int)> event;
 
-	util::multifunction<void(int)> event;
+auto cookie = event += f;
+event += [](int n) { cout << "[]: " << n << "\n"; };
 
-	auto cookie = event += f;
-	event += [](int n) { cout << "[]: " << n << "\n"; };
+event(42);
+// Output:
+// f: 42
+// []: 42
 
-	event(42);
-	// Output:
-	// f: 42
-	// []: 42
+event -= cookie;
 
-	event -= cookie;
-
-	event(23);
-	// Output:
-	// []: 23
+event(23);
+// Output:
+// []: 23
+```
 
 A multi-function behaves essentially like a function – it’s callable, and defines the appropriate typedefs such as `result_type`.
 It also supports adding and removing listeners, via the functions `operator+=` and `operator-=`.
