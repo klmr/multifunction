@@ -53,10 +53,10 @@ namespace detail {
 } // namespace detail
 
 template <typename R, typename... Args>
-struct multifunction;
+class multifunction;
 
 template <typename R, typename... Args>
-class multifunction<R(Args...)> : detail::multifunction_traits<R, Args...> {
+class multifunction<R(Args...)> : public detail::multifunction_traits<R, Args...> {
 public:
 
     // Uniquely identifies a listener in this multifunction.
