@@ -2,6 +2,7 @@
 #define UTIL_MULTIFUNCTION_HPP
 
 #include <functional>
+#include <utility>
 #include <vector>
 
 namespace util {
@@ -30,11 +31,11 @@ namespace detail {
     struct call_helper {
         static R call(
             std::vector<std::function<R(Args...)>> const& listeners,
-            Args... args
+            Args&&... args
         ) {
             R ret;
             for (auto listener : listeners)
-                ret = listener(args...);
+                ret = listener(std::forward<Args>(args)...);
             return ret;
         }
     };
@@ -43,10 +44,10 @@ namespace detail {
     struct call_helper<void, Args...> {
         static void call(
             std::vector<std::function<void(Args...)>> const& listeners,
-            Args... args
+            Args&&... args
         ) {
             for (auto listener : listeners)
-                listener(args...);
+                listener(std::forward<Args>(args)...);
         }
     };
 
@@ -100,8 +101,8 @@ public:
         handle_lookup[handle.id] = NIL;
     }
 
-    R operator ()(Args... args) const {
-        return detail::call_helper<R, Args...>::call(listeners, args...);
+    R operator ()(Args&&... args) const {
+        return detail::call_helper<R, Args...>::call(listeners, std::forward<Args>(args)...);
     }
     
 private:
