@@ -10,7 +10,7 @@ struct g {
     void operator ()(int n) { cout << "g::()(" << n << ")\n"; }
 };
 
-void h(double n) { cout << "h(static_cast<double>(" << n << "))\n"; }
+void h(double n) { cout << "h(" << n << ")\n"; }
 
 int main() {
     static_assert(
@@ -22,11 +22,11 @@ int main() {
 
     util::multifunction<void(int)> event;
 
+    cout << "Adding f, g, h\n";
     auto f_tok = event += f;
     auto g_tok = event += g();
     auto h_tok = event += h;
 
-    cout << "Adding f, g, h\n";
     event(1);
 
     cout << "\nRemoving g\n";
