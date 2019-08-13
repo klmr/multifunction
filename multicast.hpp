@@ -62,12 +62,12 @@ public:
     // Uniquely identifies a listener in this multifunction.
     // This is an opaque type, meaning it can only be created and accessed
     // from within this class. The outside world can only store them.
-    class function_token {
+    class handle {
         friend class multifunction;
 
-        function_token(long unsigned id) noexcept : id(static_cast<unsigned>(id)) { }
+        handle(long unsigned id) noexcept : id(static_cast<unsigned>(id)) { }
 
-        // We assume that numeric_limits<unsigned>::max() tokens are enough.
+        // We assume that numeric_limits<unsigned>::max() handles are enough.
         unsigned id;
     };
 
@@ -79,25 +79,25 @@ public:
     ~multifunction() = default;
 
     template <typename F>
-    function_token operator +=(F listener) {
+    handle operator +=(F listener) {
         listeners.push_back(listener);
-        token_lookup.push_back(listeners.size() - 1);
-        return function_token{token_lookup.size() - 1};
+        handle_lookup.push_back(listeners.size() - 1);
+        return handle{handle_lookup.size() - 1};
     }
 
-    void operator -=(function_token token) {
-        auto i = token_lookup[token.id];
+    void operator -=(handle handle) {
+        auto i = handle_lookup[handle.id];
 
         if (i == NIL)
             return;
 
-        // Adjust token_lookup positions which have shifted.
-        for (auto& token_index : token_lookup)
-            if (token_index > i and token_index != NIL)
-                --token_index;
+        // Adjust handle_lookup positions which have shifted.
+        for (auto& handle_index : handle_lookup)
+            if (handle_index > i and handle_index != NIL)
+                --handle_index;
 
         listeners.erase(listeners.begin() + i);
-        token_lookup[token.id] = NIL;
+        handle_lookup[handle.id] = NIL;
     }
 
     R operator ()(Args... args) const {
@@ -107,7 +107,7 @@ public:
 private:
 
     std::vector<std::function<R(Args...)>> listeners;
-    std::vector<std::size_t> token_lookup;
+    std::vector<std::size_t> handle_lookup;
     static constexpr std::size_t NIL = -1;
 };
 
