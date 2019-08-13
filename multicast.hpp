@@ -34,8 +34,9 @@ namespace detail {
             Args&&... args
         ) {
             R ret;
-            for (auto listener : listeners)
+            for (auto listener : listeners) {
                 ret = listener(std::forward<Args>(args)...);
+            }
             return ret;
         }
     };
@@ -46,8 +47,9 @@ namespace detail {
             std::vector<std::function<void(Args...)>> const& listeners,
             Args&&... args
         ) {
-            for (auto listener : listeners)
+            for (auto listener : listeners) {
                 listener(std::forward<Args>(args)...);
+            }
         }
     };
 
@@ -89,13 +91,14 @@ public:
     void operator -=(handle handle) {
         auto i = handle_lookup[handle.id];
 
-        if (i == NIL)
-            return;
+        if (i == NIL) return;
 
         // Adjust handle_lookup positions which have shifted.
-        for (auto& handle_index : handle_lookup)
-            if (handle_index > i and handle_index != NIL)
+        for (auto& handle_index : handle_lookup) {
+            if (handle_index > i and handle_index != NIL) {
                 --handle_index;
+            }
+        }
 
         listeners.erase(listeners.begin() + i);
         handle_lookup[handle.id] = NIL;
