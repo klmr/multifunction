@@ -65,7 +65,7 @@ public:
     class handle {
         friend class multifunction;
 
-        handle(long unsigned id) noexcept : id(static_cast<unsigned>(id)) { }
+        handle(std::size_t id) noexcept : id(static_cast<unsigned>(id)) { }
 
         // We assume that numeric_limits<unsigned>::max() handles are enough.
         unsigned id;
