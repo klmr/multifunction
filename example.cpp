@@ -49,5 +49,6 @@ int main() {
     event += [](int n) { cout << "[](" << n << ")\n"; };
     event += [=](int n) { cout << "[=](" << n << ")\n"; };
     event += [&](int n) { cout << "[&](" << n << ")\n"; };
-    event(6);
+    int n = 6;
+    event(n);
 }
