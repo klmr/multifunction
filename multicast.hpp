@@ -29,13 +29,14 @@ namespace detail {
 
     template <typename R, typename... Args>
     struct call_helper {
+        template <typename... Ts>
         static R call(
             std::vector<std::function<R(Args...)>> const& listeners,
-            Args&&... args
+            Ts&&... args
         ) {
             R ret;
             for (auto listener : listeners) {
-                ret = listener(std::forward<Args>(args)...);
+                ret = listener(std::forward<Ts>(args)...);
             }
             return ret;
         }
@@ -43,12 +44,13 @@ namespace detail {
 
     template <typename... Args>
     struct call_helper<void, Args...> {
+        template <typename... Ts>
         static void call(
             std::vector<std::function<void(Args...)>> const& listeners,
-            Args&&... args
+            Ts&&... args
         ) {
             for (auto listener : listeners) {
-                listener(std::forward<Args>(args)...);
+                listener(std::forward<Ts>(args)...);
             }
         }
     };
@@ -104,8 +106,9 @@ public:
         handle_lookup[handle.id] = NIL;
     }
 
-    R operator ()(Args&&... args) const {
-        return detail::call_helper<R, Args...>::call(listeners, std::forward<Args>(args)...);
+    template <typename... Ts>
+    R operator ()(Ts&&... args) const {
+        return detail::call_helper<R, Args...>::call(listeners, std::forward<Ts>(args)...);
     }
     
 private:
