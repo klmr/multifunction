@@ -82,15 +82,24 @@ public:
     multifunction& operator =(multifunction const&) = default;
     multifunction& operator =(multifunction&&) = default;
     ~multifunction() = default;
-
+    
     template <typename F>
     handle operator +=(F listener) {
+        return add(listener);
+    }
+
+    template <typename F>
+    handle add(F listener) {
         listeners.push_back(listener);
         handle_lookup.push_back(listeners.size() - 1);
         return handle{handle_lookup.size() - 1};
     }
 
     void operator -=(handle handle) {
+        remove(handle);
+    }
+
+    void remove(handle handle) {
         auto i = handle_lookup[handle.id];
 
         if (i == NIL) return;
