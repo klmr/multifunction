@@ -82,7 +82,7 @@ public:
     multifunction& operator =(multifunction const&) = default;
     multifunction& operator =(multifunction&&) = default;
     ~multifunction() = default;
-    
+
     template <typename F>
     handle operator +=(F listener) {
         return add(listener);
